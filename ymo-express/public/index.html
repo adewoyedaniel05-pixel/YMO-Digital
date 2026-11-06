@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ymo Express – Food delivery</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f2e4;--card:#fffdf6;--ink:#16251e;--mute:#67705f;--line:#e3e0cb;--glow:#dfeab8;--acc:#f5c400;--acc-ink:#14301f;--sun:#f5b301;--ok:#1f7a3a;--brand:#1f7a3a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a16;--card:#1b2620;--glow:#1f3220;--ink:#eef3ec;--mute:#93a39a;--line:#2b3a32;--acc:#ffd21f;--acc-ink:#14301f;--sun:#ffd21f;--ok:#5fcf86;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121a16;--card:#1b2620;--glow:#1f3220;--ink:#eef3ec;--mute:#93a39a;--line:#2b3a32;--acc:#ffd21f;--acc-ink:#14301f;--ok:#5fcf86;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:radial-gradient(90% 38% at 100% 0,var(--glow),transparent 70%) fixed,var(--bg);color:var(--ink);font:400 16px/1.45 "Bricolage Grotesque",system-ui,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+#app{max-width:520px;margin:0 auto;padding:0 16px 120px}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 0 8px}
+.logo{font-weight:800;font-size:24px;letter-spacing:-.03em;background:var(--acc);color:#14301f;padding:4px 12px;border-radius:12px}.logo i{color:#1f7a3a;font-style:normal}
+.addr{font-size:14px;color:var(--mute)}.addr b{color:var(--ink);font-weight:600}
+h1{font-size:34px;line-height:1.05;letter-spacing:-.03em;font-weight:800;margin:14px 0 14px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px}
+.chip{flex:none;padding:8px 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);font-weight:600;font-size:14px}
+.chip[aria-pressed=true]{background:var(--brand);color:#fff;border-color:var(--brand)}
+.rest{display:flex;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:12px;margin-bottom:14px;box-shadow:0 10px 22px -14px rgba(50,70,20,.5)}
+.thumb{flex:none;width:76px;height:76px;border-radius:18px;overflow:hidden}.thumb svg{display:block;width:100%;height:100%}
+.rest h2{margin:2px 0 2px;font-size:19px;letter-spacing:-.01em}
+.meta{font-size:13.5px;color:var(--mute)}
+.tag{display:inline-block;margin-top:6px;font-size:12.5px;font-weight:600;color:var(--ok)}
+.back{padding:14px 0 4px;font-weight:600;color:var(--mute)}
+.hero{display:flex;gap:14px;align-items:center;margin:6px 0 16px}.hero .thumb{width:84px;height:84px}
+.hero h1{margin:0;font-size:30px}
+.item{display:flex;gap:12px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}
+.item .em{flex:none;font-size:28px;width:54px;height:54px;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fffdf6,#e7e0c6);box-shadow:0 5px 10px -5px rgba(60,40,10,.45),inset 0 0 0 3px rgba(255,255,255,.6)}
+.item .t{flex:1}.item .t b{display:block;font-weight:600}.item .t span{font-size:13.5px;color:var(--mute)}
+.price{font-weight:600;font-variant-numeric:tabular-nums}
+.add{background:var(--acc);color:var(--acc-ink);font-weight:800;border-radius:99px;padding:7px 16px}
+.qty{display:inline-flex;align-items:center;gap:2px;background:var(--brand);color:#fff;border-radius:99px}
+.qty button{width:34px;height:34px;font-size:18px;font-weight:800}.qty span{min-width:18px;text-align:center;font-weight:600}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 30%)}
+.bar button{display:flex;justify-content:space-between;width:100%;max-width:488px;margin:0 auto;background:var(--acc);color:var(--acc-ink);font-weight:800;border-radius:16px;padding:16px 20px}
+.cta{display:block;width:100%;background:var(--acc);color:var(--acc-ink);font-weight:800;border-radius:16px;padding:16px;margin-top:18px;font-size:17px}
+.sum{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:6px 16px;margin-top:12px}
+.row{display:flex;justify-content:space-between;padding:8px 0}.row.tot{border-top:1px solid var(--line);font-weight:800;font-size:18px;margin-top:4px;padding-top:12px}
+label{display:block;font-weight:600;font-size:14px;margin:16px 0 6px}
+input{width:100%;padding:13px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+.pay{display:flex;gap:8px}.pay .chip{flex:1;text-align:center}
+.empty{text-align:center;color:var(--mute);padding:60px 0}.empty div{font-size:54px}
+.eta{font-size:48px;font-weight:800;letter-spacing:-.03em;margin:10px 0 0}
+.steps{list-style:none;margin:20px 0;padding:0}
+.steps li{display:flex;gap:14px;padding:0 0 22px;position:relative;color:var(--mute)}
+.steps li::before{content:"";flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);background:var(--card);z-index:1}
+.steps li:not(:last-child)::after{content:"";position:absolute;left:10px;top:22px;bottom:0;width:2px;background:var(--line)}
+.steps li.done{color:var(--ink)}.steps li.done::before{background:var(--ok);border-color:var(--ok)}
+.steps li.now{color:var(--ink);font-weight:800}.steps li.now::before{border-color:var(--acc);background:var(--acc)}
+.rider{position:relative;height:64px;border-radius:16px;background:var(--card);border:1px solid var(--line);overflow:hidden;margin-top:10px}
+.rider i{position:absolute;top:10px;font-style:normal;font-size:32px;transition:left 1.2s ease}
+.rider u{position:absolute;right:14px;top:10px;font-size:32px;text-decoration:none}
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;font-weight:600;z-index:5}
+@media (prefers-reduced-motion:reduce){.rider i{transition:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const R=[
+{id:"r1",n:"Iya Bisi Kitchen",c:"Local",e:"🍲",bg:"#fbe6b3",t:25,f:500,r:"4.8",m:[["🍲","Amala, ewedu & gbegiri","With assorted meat",2500],["🍲","Pounded yam & egusi","Goat meat, stockfish",3000],["🥬","Efo riro","Assorted meat, with eba",2800],["🫘","Ewa agoyin & bread","Spicy pepper sauce",1500]]},
+{id:"r2",n:"Jollof Junction",c:"Rice",e:"🍛",bg:"#fbd9c9",t:30,f:500,r:"4.7",m:[["🍛","Jollof rice & chicken","Party-style, with plantain",3500],["🍚","Fried rice & turkey","With coleslaw",4000],["🥥","Coconut rice & fish","Smoked fish",3500],["🫔","Moin moin","Steamed bean pudding",1000]]},
+{id:"r3",n:"Suya Spot",c:"Grills",e:"🍢",bg:"#f5d3bd",t:20,f:300,r:"4.6",m:[["🍢","Beef suya (large)","Yaji spice, onions, tomato",2500],["🍗","Chicken suya","Grilled over charcoal",3000],["🐐","Asun","Peppered smoked goat",3500],["🍌","Roasted plantain & fish","Boli with pepper sauce",2000]]},
+{id:"r4",n:"Campus Bites",c:"Snacks",e:"🌯",bg:"#cfe8d2",t:20,f:300,r:"4.5",m:[["🌯","Chicken shawarma","Creamy sauce, sausage",3000],["🥧","Meat pie","Freshly baked",700],["🥤","Zobo drink","Chilled hibiscus, 50 cl",500],["🍩","Puff puff (10)","Hot and fluffy",1000]]}];
+const plate='<ellipse cx="50" cy="90" rx="38" ry="5" fill="#0002"/><ellipse cx="50" cy="56" rx="42" ry="32" fill="#fffdf6" stroke="#e2dcc5"/><ellipse cx="50" cy="56" rx="33" ry="24" fill="#f3eddb"/>';
+const dots=(a,c,r)=>a.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="${r}" fill="${c}"/>`).join("");
+const ART={
+r1:["#e7d6a8",plate+'<ellipse cx="58" cy="58" rx="20" ry="15" fill="#3f7d2c"/><ellipse cx="54" cy="55" rx="9" ry="5" fill="#5da03f" opacity=".6"/>'+dots([[63,54],[54,63],[67,63],[58,50]],"#b5442a",3.6)+'<ellipse cx="35" cy="52" rx="14" ry="12" fill="#ecd6a0"/><ellipse cx="31" cy="47" rx="6" ry="3.5" fill="#fff" opacity=".45"/>'],
+r2:["#f0d9bf",plate+'<ellipse cx="45" cy="55" rx="23" ry="17" fill="#d9661f"/><ellipse cx="43" cy="49" rx="15" ry="8" fill="#ee9140"/>'+dots([[36,50],[42,46],[50,50],[46,58],[34,58],[54,57],[40,54],[58,53]],"#fbd7a0",1.4)+'<ellipse cx="69" cy="60" rx="11" ry="7" fill="#8d4a22" transform="rotate(-25 69 60)"/><ellipse cx="62" cy="57" rx="4" ry="2.5" fill="#c07a3d" transform="rotate(-25 62 57)"/><circle cx="79" cy="65" r="3" fill="#f6efd8"/><ellipse cx="30" cy="70" rx="7" ry="3.5" fill="#f2b134"/><ellipse cx="38" cy="73" rx="7" ry="3.5" fill="#e59e22"/>'],
+r3:["#c9a77c",'<rect x="6" y="26" width="88" height="52" rx="9" fill="#8a5a33"/><rect x="6" y="26" width="88" height="52" rx="9" fill="none" stroke="#6d4424" stroke-width="2"/>'+[38,52,66].map((y,i)=>`<line x1="12" y1="${y+2}" x2="88" y2="${y-2}" stroke="#e3c68c" stroke-width="1.8"/>`+[26,40,54,68].map((x,j)=>`<ellipse cx="${x+(i%2)*3}" cy="${y+1-(x-50)/20}" rx="6.5" ry="5" fill="${j%2?"#7b3f1d":"#8f4a22"}"/><ellipse cx="${x+(i%2)*3-1.5}" cy="${y-1-(x-50)/20}" rx="3" ry="1.6" fill="#d58a4a" opacity=".6"/>`).join("")).join("")+'<circle cx="84" cy="70" r="6" fill="#d9432b"/><circle cx="84" cy="70" r="3.2" fill="#ee6c52"/><circle cx="15" cy="70" r="5" fill="none" stroke="#efe0f3" stroke-width="2.4"/>'],
+r4:["#cfe0b8",'<ellipse cx="50" cy="90" rx="30" ry="5" fill="#0002"/><g transform="rotate(-14 50 58)"><rect x="30" y="48" width="40" height="38" rx="6" fill="#cfd3d6"/><rect x="30" y="48" width="40" height="38" rx="6" fill="none" stroke="#aab0b5"/><rect x="31" y="22" width="38" height="44" rx="15" fill="#e8c88e"/><rect x="31" y="22" width="38" height="44" rx="15" fill="none" stroke="#c9a064" stroke-width="1.5"/><ellipse cx="50" cy="24" rx="15" ry="6.5" fill="#6aa33a"/><ellipse cx="50" cy="26" rx="9" ry="3" fill="#fff8e8"/>'+dots([[44,25],[56,24],[50,22]],"#d9432b",2.2)+'</g>']};
+const art=k=>`<svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" fill="${ART[k][0]}"/>${ART[k][1]}</svg>`;
+const CATS=["All","Local","Rice","Grills","Snacks"];
+const STAGES=["Order received","Preparing your food","Rider picked it up","Arriving at your door","Delivered"];
+const S={phone:"",email:"",live:false,oid:null,key:"",list:[],view:"home",cat:"All",rid:null,cart:{},rid_cart:null,pay:"Card",name:"",addr:"Lagere Road, Ile-Ife, Osun State",ord:null,stage:0,tick:null,toast:""};
+const $=s=>document.querySelector(s),eur=n=>"₦"+Math.round(n).toLocaleString("en-NG");
+const rest=id=>R.find(r=>r.id===id);
+const items=()=>Object.entries(S.cart).map(([k,q])=>{const[ri,mi]=k.split(":");return{k,q,r:rest(ri),m:rest(ri).m[mi],mi}});
+const sub=()=>items().reduce((s,i)=>s+i.m[3]*i.q,0),cnt=()=>items().reduce((s,i)=>s+i.q,0);
+const fee=()=>S.rid_cart?rest(S.rid_cart).f:0;
+function say(t){S.toast=t;draw();setTimeout(()=>{S.toast="";draw()},1800)}
+function add(ri,mi){if(S.rid_cart&&S.rid_cart!==ri){S.cart={};S.toast="Cart cleared: one restaurant per order"}S.rid_cart=ri;const k=ri+":"+mi;S.cart[k]=(S.cart[k]||0)+1;draw();if(S.toast)setTimeout(()=>{S.toast="";draw()},1800)}
+function dec(k){S.cart[k]--;if(!S.cart[k])delete S.cart[k];if(!cnt())S.rid_cart=null;draw()}
+function ctl(ri,mi){const k=ri+":"+mi,q=S.cart[k];return q?`<span class="qty"><button data-a="dec" data-k="${k}" aria-label="Remove one">−</button><span>${q}</span><button data-a="add" data-r="${ri}" data-m="${mi}" aria-label="Add one">+</button></span>`:`<button class="add" data-a="add" data-r="${ri}" data-m="${mi}">Add</button>`}
+function home(){const l=R.filter(r=>S.cat==="All"||r.c===S.cat);return`<header><div class="logo">ymo<i>express</i></div><div class="addr">Deliver to<br><b>${S.addr.split(",")[0]}</b></div></header>
+<h1>What are you<br>hungry for?</h1>
+<div class="chips" role="group" aria-label="Cuisine">${CATS.map(c=>`<button class="chip" aria-pressed="${S.cat===c}" data-a="cat" data-c="${c}">${c}</button>`).join("")}</div>
+${l.map(r=>`<button class="rest" data-a="open" data-r="${r.id}"><div class="thumb" >${art(r.id)}</div><div><h2>${r.n}</h2><div class="meta">★ ${r.r} · ${r.t}–${r.t+10} min · ${r.c}</div><span class="tag">Delivery ${eur(r.f)}</span></div></button>`).join("")}`}
+function menu(){const r=rest(S.rid);return`<button class="back" data-a="home">‹ All restaurants</button>
+<div class="hero"><div class="thumb" >${art(r.id)}</div><div><h1>${r.n}</h1><div class="meta">★ ${r.r} · ${r.t}–${r.t+10} min · Delivery ${eur(r.f)}</div></div></div>
+${r.m.map((m,i)=>`<div class="item"><div class="em">${m[0]}</div><div class="t"><b>${m[1]}</b><span>${m[2]}</span><div class="price">${eur(m[3])}</div></div>${ctl(r.id,i)}</div>`).join("")}`}
+const bank=t=>`<div class="sum"><div class="meta" style="padding-top:8px">Send exactly <b>${eur(t)}</b> to:</div><div class="row"><span>Bank</span><b>OPay</b></div><div class="row"><span>Account number</span><b>7044992944</b></div><div class="row"><span>Account name</span><b>Daniel Oluwadarasimi Adewoye</b></div><div class="meta" style="padding-bottom:10px">We start preparing your food once your payment is confirmed.</div></div>`;
+function cart(){if(!cnt())return`<button class="back" data-a="home">‹ Keep browsing</button><div class="empty"><div>🛒</div><p>Your cart is empty.<br>Pick something tasty from a restaurant.</p></div>`;
+const r=rest(S.rid_cart),t=sub()+fee();
+return`<button class="back" data-a="${S.rid?"open":"home"}" data-r="${S.rid_cart}">‹ Back</button><h1>Your order</h1><div class="meta">From ${r.n}</div>
+${items().map(i=>`<div class="item"><div class="em">${i.m[0]}</div><div class="t"><b>${i.m[1]}</b><div class="price">${eur(i.m[3]*i.q)}</div></div>${ctl(i.r.id,i.mi)}</div>`).join("")}
+<div class="sum"><div class="row"><span>Subtotal</span><span>${eur(sub())}</span></div><div class="row"><span>Delivery</span><span>${eur(fee())}</span></div><div class="row tot"><span>Total</span><span>${eur(t)}</span></div></div>
+<label for="nm">Name</label><input id="nm" value="${S.name}" placeholder="Who is it for?" autocomplete="name">
+<label for="ad">Delivery address</label><input id="ad" value="${S.addr}" autocomplete="street-address"><label for="ph">Phone number</label><input id="ph" type="tel" value="${S.phone}" placeholder="0803 000 0000" autocomplete="tel"><label for="em">Email for your receipt (optional)</label><input id="em" type="email" value="${S.email}" autocomplete="email">
+<label>Payment</label><div class="pay">${["Card","Transfer","On delivery"].map(p=>`<button class="chip" aria-pressed="${S.pay===p}" data-a="pay" data-p="${p}">${p}</button>`).join("")}</div>
+${S.pay==="Transfer"?bank(t):""}<button class="cta" data-a="order">Place order · ${eur(t)}</button>`}
+function track(){const o=S.ord,done=S.stage===4,left=Math.max(0,o.eta-S.stage*Math.ceil(o.eta/4));
+return`<h1>${done?"Enjoy your meal!":"On its way"}</h1><div class="meta">Order ${esc(o.id)} · ${esc(o.r)} → ${esc(o.addr)}</div>
+<div class="eta">${done?"Delivered":left+" min"}</div>
+<div class="rider" aria-hidden="true"><i style="left:${6+S.stage*19}%">🛵</i><u>🏠</u></div>
+<ul class="steps">${STAGES.map((s,i)=>`<li class="${i<S.stage||done?"done":i===S.stage?"now":""}">${s}</li>`).join("")}</ul>
+${o.pay==="Transfer"?bank(o.total):""}<div class="sum"><div class="row tot"><span>Payment: ${o.pay}</span><span>${eur(o.total)}</span></div></div>
+<button class="cta" data-a="home" data-new="1">${done?"Order again":"Back to restaurants"}</button>`}
+function draw(){const a=$("#app"),keep=document.activeElement&&document.activeElement.id,pos=keep?document.activeElement.selectionStart:0;
+const v={home,menu,cart,track,staff}[S.view]();
+const bar=(S.view==="home"||S.view==="menu")&&cnt()?`<div class="bar"><button data-a="cart"><span>View cart · ${cnt()} item${cnt()>1?"s":""}</span><span>${eur(sub())}</span></button></div>`:"";
+a.innerHTML=v+bar+(S.toast?`<div class="toast" role="status">${S.toast}</div>`:"");
+if(keep){const e=document.getElementById(keep);if(e){e.focus();try{e.setSelectionRange(pos,pos)}catch(_){}}}}
+document.addEventListener("input",e=>{if(e.target.id==="nm")S.name=e.target.value;if(e.target.id==="ad")S.addr=e.target.value;if(e.target.id==="ph")S.phone=e.target.value;if(e.target.id==="em")S.email=e.target.value});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;const d=b.dataset;
+if(d.a==="cat"){S.cat=d.c}
+else if(d.a==="open"){S.rid=d.r;S.view="menu";scrollTo(0,0)}
+else if(d.a==="home"){S.view="home";S.rid=null;scrollTo(0,0)}
+else if(d.a==="cart"){S.view="cart";scrollTo(0,0)}
+else if(d.a==="add"){return add(d.r,+d.m)}
+else if(d.a==="dec"){return dec(d.k)}
+else if(d.a==="pay"){S.pay=d.p}
+else if(d.a==="order"){if(!S.name.trim()||!S.addr.trim()||S.phone.replace(/\D/g,"").length<10)return say("Add your name, address and a valid phone number");if(S.pay==="Card"&&!/\S+@\S+\.\S+/.test(S.email))return say("Enter your email to pay by card");place();return}
+else if(d.a==="refresh"){return loadStaff()}
+else if(d.a==="adv"){return fetch("/api/orders/"+d.id,{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-key":S.key},body:JSON.stringify({stage:+d.s})}).then(loadStaff)}
+draw()});
+const esc=t=>String(t).replace(/[&<>"']/g,c=>"&#"+c.charCodeAt(0)+";");
+async function place(){const r=rest(S.rid_cart),total=sub()+fee();
+const body={restaurant:r.n,name:S.name,phone:S.phone,email:S.email,addr:S.addr,pay:S.pay,total,items:items().map(i=>({n:i.m[1],q:i.q,p:i.m[3]}))};
+let id="YMO-"+Math.floor(1000+Math.random()*9000);
+if(S.live){try{const x=await fetch("/api/orders",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});if(!x.ok)throw 0;const j=await x.json();id=j.id;if(j.payUrl){location.href=j.payUrl;return}}catch(_){return say("Could not send your order. Check your connection and try again.")}}
+S.oid=id;S.ord={id,r:r.n,addr:S.addr,pay:S.pay,total,eta:r.t};S.cart={};S.rid_cart=null;S.stage=0;S.view="track";scrollTo(0,0);draw();
+clearInterval(S.tick);S.tick=setInterval(async()=>{if(S.stage>=4)return clearInterval(S.tick);
+if(S.live){try{S.stage=(await(await fetch("/api/orders/"+id)).json()).stage}catch(_){}}else S.stage++;draw()},S.live?6000:3500)}
+async function loadStaff(){if(!S.key)S.key=prompt("Staff access key")||"";try{const x=await fetch("/api/orders",{headers:{"x-admin-key":S.key}});if(!x.ok)throw 0;S.list=await x.json()}catch(_){S.list=null}draw()}
+function staff(){return`<header><div class="logo">ymo<i>express</i></div><button class="chip" data-a="refresh">Refresh</button></header><h1>Incoming orders</h1>`+(S.list===null?`<div class="empty"><div>🔒</div><p>Can't load orders. Check the staff key and that the server is running.</p></div>`:!S.list.length?`<div class="empty"><div>🧾</div><p>No orders yet.</p></div>`:S.list.map(o=>`<div class="sum"><div class="row"><b>${esc(o.id)} · ${esc(o.restaurant)}</b><span>${eur(o.total)}</span></div><div class="meta">${esc(o.name)} · ${esc(o.phone)}<br>${esc(o.addr)}</div><div class="meta">${o.items.map(i=>esc(i.q)+"× "+esc(i.n)).join(", ")}</div><div class="row"><span class="tag">${STAGES[o.stage]}${o.paid?" · Paid ✓":o.pay==="Card"?" · Awaiting payment":""}</span>${o.stage<4?`<button class="add" data-a="adv" data-id="${esc(o.id)}" data-s="${o.stage+1}">${STAGES[o.stage+1]}</button>`:""}</div></div>`).join(""))}
+fetch("/api/health").then(r=>{if(r.ok&&/json/.test(r.headers.get("content-type")||"")){S.live=true;const id=new URLSearchParams(location.search).get("order");if(id)resume(id)}}).catch(()=>{});
+async function resume(id){try{const v=await(await fetch("/api/orders/"+id+"/verify")).json();if(!v.paid)return say("Payment not completed. Please try again.");
+S.ord={id,r:v.restaurant,addr:"your address",pay:"Card",total:v.total,eta:30};S.cart={};S.rid_cart=null;S.stage=v.stage;S.view="track";history.replaceState(null,"",location.pathname);draw();
+clearInterval(S.tick);S.tick=setInterval(async()=>{if(S.stage>=4)return clearInterval(S.tick);try{S.stage=(await(await fetch("/api/orders/"+id)).json()).stage}catch(_){}draw()},6000)}catch(_){say("Could not confirm payment")}}
+if(location.hash==="#staff"){S.view="staff";loadStaff()}
+draw();
+</script>
+</body>
+</html>
